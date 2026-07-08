@@ -1,7 +1,7 @@
 package ar.edu.utn.frba.ddsi.receptor.messaging;
 
 import ar.edu.utn.frba.ddsi.receptor.dto.AlertaClimaEvento;
-import ar.edu.utn.frba.ddsi.receptor.services.ProcesadorEventoService;
+import ar.edu.utn.frba.ddsi.receptor.services.IProcesadorEventosService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -15,9 +15,9 @@ import org.springframework.stereotype.Component;
 public class EventoListener {
 
   private static final Logger log = LoggerFactory.getLogger(EventoListener.class);
-  private final ProcesadorEventoService procesadorEventoService;
+  private final IProcesadorEventosService procesadorEventoService;
 
-  public EventoListener(ProcesadorEventoService procesadorEventoService) {
+  public EventoListener(IProcesadorEventosService procesadorEventoService) {
     this.procesadorEventoService = procesadorEventoService;
   }
 

@@ -2,7 +2,7 @@ package ar.edu.utn.frba.ddsi.emisor.jobs;
 
 import ar.edu.utn.frba.ddsi.emisor.models.Clima;
 import ar.edu.utn.frba.ddsi.emisor.repositories.implementations.ClimaRepository;
-import ar.edu.utn.frba.ddsi.emisor.services.WeatherService;
+import ar.edu.utn.frba.ddsi.emisor.services.IWeatherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 public class CargarWeather {
     private static final Logger log = LoggerFactory.getLogger(CargarWeather.class);
 
-    private final WeatherService weatherService;
+    private final IWeatherService weatherService;
     private final ClimaRepository repository;
 
-    public CargarWeather(WeatherService weatherService, ClimaRepository repository) {
+    public CargarWeather(IWeatherService weatherService, ClimaRepository repository) {
         this.weatherService = weatherService;
         this.repository = repository;
     }

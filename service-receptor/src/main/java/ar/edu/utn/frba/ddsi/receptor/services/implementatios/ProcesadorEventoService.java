@@ -1,7 +1,8 @@
-package ar.edu.utn.frba.ddsi.receptor.services;
+package ar.edu.utn.frba.ddsi.receptor.services.implementatios;
 
 import ar.edu.utn.frba.ddsi.receptor.dto.AlertaClimaEvento;
 import ar.edu.utn.frba.ddsi.receptor.dto.Mensaje;
+import ar.edu.utn.frba.ddsi.receptor.services.IProcesadorEventosService;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,7 @@ import java.util.List;
  * Por ahora solo loguea el evento como demostración.
  */
 @Service
-public class ProcesadorEventoService {
+public class ProcesadorEventoService implements IProcesadorEventosService {
   private static final Logger log = LoggerFactory.getLogger(ProcesadorEventoService.class);
   private final GestorDeNotificaciones gestorDeNotificaciones;
 

@@ -1,13 +1,14 @@
-package ar.edu.utn.frba.ddsi.emisor.services;
+package ar.edu.utn.frba.ddsi.emisor.services.implementations;
 
 import ar.edu.utn.frba.ddsi.emisor.conectors.WeatherAPIConector;
 import ar.edu.utn.frba.ddsi.emisor.dto.WeatherAPIResponse;
 import ar.edu.utn.frba.ddsi.emisor.models.Clima;
+import ar.edu.utn.frba.ddsi.emisor.services.IWeatherService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class WeatherService {
+public class WeatherService implements IWeatherService {
     private final WeatherAPIConector conectorWeatherApi;
     private final String ubicacionFija;
 

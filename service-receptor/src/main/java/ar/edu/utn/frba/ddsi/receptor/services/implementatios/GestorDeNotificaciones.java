@@ -1,6 +1,7 @@
-package ar.edu.utn.frba.ddsi.receptor.services;
+package ar.edu.utn.frba.ddsi.receptor.services.implementatios;
 
 import ar.edu.utn.frba.ddsi.receptor.dto.Mensaje;
+import ar.edu.utn.frba.ddsi.receptor.services.IGestorDeNotificaciones;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class GestorDeNotificaciones {
+public class GestorDeNotificaciones implements IGestorDeNotificaciones {
     private static final Logger log = LoggerFactory.getLogger(GestorDeNotificaciones.class);
 
     private final List<Mensaje> bandejaDeSalida = new ArrayList<>();
