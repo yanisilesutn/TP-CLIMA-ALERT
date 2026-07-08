@@ -1,7 +1,6 @@
 package ar.edu.utn.frba.ddsi.receptor.messaging;
 
 import ar.edu.utn.frba.ddsi.receptor.dto.AlertaClimaEvento;
-import ar.edu.utn.frba.ddsi.receptor.dto.MensajeEvento;
 import ar.edu.utn.frba.ddsi.receptor.services.ProcesadorEventoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
