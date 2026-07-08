@@ -1,0 +1,68 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "${RABBITMQ_AMQP_PORT:-5672}:5672"     # puerto AMQP (por acá se conectan los servicios)
+      - "${RABBITMQ_MGMT_PORT:-15672}:15672"   # panel de administración web (http://localhost:15672)
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-guest}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    networks:
+      - broker-net
+
+  # ---- Servicios de ejemplo (productor / consumidor) ----
+  # Descomentá para levantar los servicios dentro de Docker.
+  # Para desarrollo es más cómodo correrlos desde el IDE (apuntan a localhost por default).
+
+  service-emisor:
+    build:
+      context: .
+      dockerfile: service-emisor/Dockerfile
+      args:
+        SERVICE_NAME: service-emisor
+    container_name: service-emisor
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USER:-guest}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASS:-guest}
+    ports:
+      - "8080:8080"
+    networks:
+      - broker-net
+
+  service-receptor:
+    build:
+      context: .
+      dockerfile: service-receptor/Dockerfile
+      args:
+        SERVICE_NAME: service-receptor
+    container_name: service-receptor
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USER:-guest}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASS:-guest}
+    ports:
+      - "8081:8081"
+    networks:
+      - broker-net
+
+volumes:
+  rabbitmq_data:
+
+networks:
+  broker-net:
+    driver: bridge

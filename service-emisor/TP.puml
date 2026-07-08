@@ -1,0 +1,84 @@
+@startuml
+skinparam style strictuml
+skinparam DefaultFontName Arial
+
+package "Models (Dominio)" {
+    class RegistroClima {
+        - temperatura: double
+        - humedad: int
+        - fechaConsulta: LocalDateTime
+        + RegistroClima(temperatura: double, humedad: int)
+        + getTemperatura(): double
+        + getHumedad(): int
+        + getFechaConsulta(): LocalDateTime
+    }
+}
+
+package "DTOs (Eventos)" {
+    class AlertaClimaEvento {
+        - temperatura: double
+        - humedad: int
+        - ubicacion: String
+        - fechaHora: LocalDateTime
+        + AlertaClimaEvento(...)
+    }
+}
+
+package "Repositories (Persistencia)" {
+    class RegistroClimaRepository <<@Repository>> {
+        - baseDeDatosEnMemoria: List<RegistroClima>
+        + guardar(registro: RegistroClima): void
+        + obtenerUltimoRegistro(): RegistroClima
+    }
+}
+
+package "Services (Lógica Externa)" {
+    class WeatherService <<@Service>> {
+        - restClient: RestClient
+        - apiUrl: String
+        + obtenerClimaActual(ubicacion: String): RegistroClima
+    }
+}
+
+package "Messaging (Asincronismo)" {
+    class EventoPublisher <<@Component>> {
+        - rabbitTemplate: RabbitTemplate
+        - exchangeName: String
+        - routingKey: String
+        + publicarAlerta(evento: AlertaClimaEvento): void
+    }
+}
+
+package "Jobs (Tareas Programadas)" {
+    class WeatherFetcherJob <<@Component>> {
+        - weatherService: WeatherService
+        - repository: RegistroClimaRepository
+        + obtenerYGuardarClima(): void <<@Scheduled(fixedRate = 300000)>>
+    }
+
+    class AlertAnalyzerJob <<@Component>> {
+        - repository: RegistroClimaRepository
+        - eventoPublisher: EventoPublisher
+        + analizarClima(): void <<@Scheduled(fixedRate = 60000)>>
+    }
+}
+
+' ---------- Relaciones ----------
+
+' Persistencia
+RegistroClimaRepository "1" *-- "*" RegistroClima : almacena >
+
+' Fetcher Job (Punto 1 del TP)
+WeatherFetcherJob --> WeatherService : delega llamada API a >
+WeatherFetcherJob --> RegistroClimaRepository : guarda resultados en >
+WeatherFetcherJob ..> RegistroClima : instancia >
+
+' Analyzer Job (Punto 2 del TP)
+AlertAnalyzerJob --> RegistroClimaRepository : consulta último registro a >
+AlertAnalyzerJob --> EventoPublisher : emite alertas mediante >
+AlertAnalyzerJob ..> AlertaClimaEvento : crea >
+
+' Messaging (Punto 3 del TP)
+EventoPublisher ..> AlertaClimaEvento : envía a la cola RabbitMQ >
+
+@enduml
